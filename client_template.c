@@ -43,9 +43,9 @@ int main(int argc, char *argv[])
         error("ERROR opening socket");
 
 	//Complete the missing codes
-    serv_addr.sin_family = ;
-    serv_addr.sin_addr.s_addr = ;
-    serv_addr.sin_port = ;
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = inet_addr(SERVER_ADDR);
+    serv_addr.sin_port = htons(portno);
 
     if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) 
         error("ERROR connecting");
@@ -58,6 +58,8 @@ int main(int argc, char *argv[])
 
     /* send HELLO message */
     //Do Stuff
+    send(sockfd, client_msg, strlen(client_msg), 0);
+    
 
     /* receive STATUS message */
     bzero(server_msg1,MAX_STR_SIZE);					//receive STATUS message
@@ -67,8 +69,17 @@ int main(int argc, char *argv[])
     
     /* parse STATUS message */
     //Do Stuff
+    if(strcmp(strtok(server_msg1, " "), magic_str) != 0){
+        error("Incorrect Magic String");
+    }
+    if(strcmp(strtok(NULL, " "), "STATUS") != 0){
+        error("Incorrect Message Type");
+    }
+    rand_num_str = strtok(NULL, " ");
+    rand_num_str2 = strtok(NULL, " ");
+    addr_string = strtok(NULL, " ");
     printf("%s STATUS %s %s %s\n", magic_str, rand_num_str, rand_num_str2, addr_string);
-
+    
 
     /* construct BYE message */
     bzero(client_msg, MAX_STR_SIZE);
@@ -78,6 +89,7 @@ int main(int argc, char *argv[])
 
     /* send BYE message */
     //Do Stuff
+    send(sockfd, client_msg, strlen(client_msg), 0);
 
 
     /* receive CONFIRM_BYE message */
@@ -88,6 +100,14 @@ int main(int argc, char *argv[])
     
     /* parse CONFIRM_BYE message */
     //Do Stuff
+    if(strcmp(strtok(server_msg2, " "), magic_str) != 0){
+        error("Incorrect Magic String");
+    }
+    if(strcmp(strtok(NULL, " "), "CONFIRM_BYE") != 0){
+        error("Incorrect Message Type");
+    }
+    gold_str = strtok(NULL, " ");
+    printf("%s CONFIRM_BYE %s\n", magic_str, gold_str);
 
     /* Close Connection */
     close(sockfd);
