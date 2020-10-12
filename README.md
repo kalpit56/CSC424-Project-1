@@ -7,4 +7,5 @@ In order to run the code, you need to download the files and simply compile them
 
 ## Usage
 ./client_template [ID]
+
 The ID is supposed to be our CaneID, which is an 8 digit number. For testing purposes, you can use any sequence of numbers.
